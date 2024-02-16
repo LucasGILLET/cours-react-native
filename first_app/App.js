@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, FlatList, TextInput, SafeAreaView, Item, TouchableOpacity, Modal, Pressable } from 'react-native';
 import React from 'react';
-
+import DeleteModal from './components/deleteModal';
+import Hello from './components/hello';
 
 
 export default function App() {
@@ -21,8 +22,12 @@ export default function App() {
       "Faire un triathlon"
     ]
   )
+  // modification
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalInput, setModalInput] = React.useState({index: 0, data: ''});
+  // modal suppression
+  const [modalDeleteVisible, setModalDeleteVisible] = React.useState(false);
+  const [deleteIndex, setDeleteIndex] = React.useState();
 
   const addTask = () => {
     sampleGloals.push(text)
@@ -30,7 +35,8 @@ export default function App() {
   }
 
   const deleteTask = (index) => {
-    setSampleGoals(sampleGloals.filter((x, i) => i !== index))
+    setDeleteIndex(index)
+    setModalDeleteVisible(true)
   }
 
   const openModificationModal = (index, data) => {
@@ -40,27 +46,15 @@ export default function App() {
 
   const modifyTask = () => {
 
-    // permet de modifier l'index correspondant
-    // facon alternative : 
-      // setSampleGoals(() => sampleGloals.map((goal, i) => {
-      //   if (i == modalInput.index) {
-      //     goal = modalInput.data
-      //   }
-      //   return goal;
-      // }))
     let newSampleGoals = sampleGloals
     newSampleGoals[modalInput.index] = modalInput.data
     setSampleGoals(newSampleGoals)
-
 
     // ferme la modale
     setModalVisible(false)
     // reset la modale
     setModalInput({index: 0, data: ""})
   }
-
-
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,6 +63,8 @@ export default function App() {
         Hello <Text style={styles.appjs}>App.js</Text>
       </Text>
 
+      <Hello username="Lucas"/>
+      <DeleteModal modalVisible={modalDeleteVisible} setModalVisible={setModalDeleteVisible} index={deleteIndex} sampleGloals={sampleGloals} setSampleGoals={setSampleGoals}/>
       <Text style={styles.list_title}>Ma liste : </Text>
 
       <FlatList 
@@ -126,8 +122,6 @@ export default function App() {
       <StatusBar style="auto" />
 
   </SafeAreaView>
-
-
   );
 }
 
@@ -203,11 +197,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     
   },
-
-
-
-
-
 
   // MODAL
 
